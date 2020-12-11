@@ -35,5 +35,12 @@ Route::get('/verifycode/{mobile}/{code}',[MobileController::class,'verifyMobile'
 Route::get('request',function (){
     return view('services');
 });
-Route::get('/all',[PostPrimController::class,'index'])->name('index');
-Route::get('show',[PostPrimController::class,'show']);
+
+Route::group([
+    'middleware' => 'auth'
+],function (){
+    Route::resource('posts', PostController::class);
+    Route::get('/all',[PostPrimController::class,'index'])->name('index');
+    Route::get('show',[PostPrimController::class,'show']);
+});
+

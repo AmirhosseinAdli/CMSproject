@@ -66,13 +66,14 @@
                 <form action="{{route('posts.destroy',[$post])}}" method="post">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm active">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-sm active" onclick="return confirm('آیا از حذف این پست مطمپن هستید؟')">Delete</button>
                 </form>
 
             </td>
                         </tr>
                         @endforeach
                         </tbody>
+    {{$posts->links('pagination::bootstrap-4')}}
                 </table>
 </body>
 </html>
