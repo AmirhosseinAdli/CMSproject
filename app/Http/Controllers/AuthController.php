@@ -85,7 +85,7 @@ class AuthController extends Controller
         $cacheCode = Cache::get($request->mobile);
         if ($cacheCode != null && $cacheCode == $request->code){
             Cache::forget($request->mobile);
-            return response('mobile has verified');
+            return view('auth.information');
         }
         return response('try again');
     }
