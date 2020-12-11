@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\MobileController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostPrimController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +19,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('posts', PostController::class);
+
+
+//Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/sendcode/{mobile}',[MobileController::class,'sendVerificationCode']);
+Route::get('/verifycode/{mobile}/{code}',[MobileController::class,'verifyMobile']);
+
+Route::get('request',function (){
+    return view('services');
+});
+Route::get('/all',[PostPrimController::class,'index'])->name('index');
+Route::get('show',[PostPrimController::class,'show']);

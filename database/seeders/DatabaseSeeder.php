@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        (new UserSeeder())->run();
+        (new CategorySeeder())->run();
+        (new TagSeeder())->run();
+        (new PostSeeder())->run();
+        (new ImageSeeder())->run();
     }
 }
