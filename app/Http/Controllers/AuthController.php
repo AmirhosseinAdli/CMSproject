@@ -75,7 +75,14 @@ class AuthController extends Controller
                 ->where('email', $username)
                 ->orWhere('mobile', $username)
                 ->first();
-            return redirect()->route('welcome')->with('status', "$user->name خوش آمدید ");
+            $this->redirectTo = $user->hasRole('admin')?
+                route("admin.home")
+                : route("user.home");
+            if ($user->hasRole('admin')) {
+                return redirect()->route('admin.home')->with('status', "$user->name خوش آمدید ");
+            }
+            else
+                return redirect()->route('user.home')->with('status', "$user->name خوش آمدید ");
         } else
             return redirect()->route('mobileLogin')->with('error', 'ایمیل یا رمز عبور وارد شده صحیح نمی باشد');
     }
