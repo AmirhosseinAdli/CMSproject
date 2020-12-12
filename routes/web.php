@@ -40,7 +40,7 @@ Route::group([
     'middleware' => 'auth'
 ],function (){
     Route::resource('posts', PostController::class);
-    Route::get('/all',[PostPrimController::class,'index'])->name('index');
-    Route::get('show',[PostPrimController::class,'show']);
+//    Route::get('/all',[PostPrimController::class,'index'])->name('index');
+//    Route::get('show',[PostPrimController::class,'show']);
 });
 

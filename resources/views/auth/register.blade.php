@@ -10,6 +10,7 @@
 
         <form action="{{  route('register')  }}" method="post" enctype="multipart/form-data">
             @csrf
+{{--            <input type="hidden" name="activation" value="1">--}}
             <div class="form-group">
                 <label for="name">نام</label>
                 <input type="text" class="form-control" id="name" name="name">

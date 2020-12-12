@@ -16,11 +16,12 @@ class AuthController extends Controller
     {
         $user = User::query()
             ->where('email', $username)
-            ->orWhere('mobile', $username);
+            ->orWhere('mobile', $username)
+        ->first();
 
         if ($user->exists()) {
-            if (Hash::check($password, $user->first()->getAuthPassword())) {
-                Auth::login($user->first());
+            if (Hash::check($password, $user->getAuthPassword()) && $user->activation == 1) {
+                Auth::login($user);
                 return \auth()->check();
             }
         }
@@ -54,8 +55,12 @@ class AuthController extends Controller
 
     public function validation(Request $request)
     {
-        if (User::query()->where('mobile',$request->mobile)->first()){
+        $user=User::query()->where('mobile',$request->mobile)->first();
+        if ($user && $user->activation==1){
             return view('auth.login')->withMobile($request->mobile);
+        }
+        elseif ($user && $user->activation==0){
+            return redirect()->route('mobileLogin')->with('status','اکانت شما توسط ادمین غیر فعال شده است');
         }
         else {
             $code = rand(100000,999999);
@@ -67,6 +72,12 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $username = $request->get('mobile');
+        $password = $request->get('password');
+        $user = User::query()
+            ->where('email', $username)
+            ->orWhere('mobile', $username)
+            ->first();
         if ($this->attempt($request->get('mobile'), $request->get('password'))) //Auth::login($user);
         {
             $username = $request->get('mobile');
@@ -75,14 +86,11 @@ class AuthController extends Controller
                 ->where('email', $username)
                 ->orWhere('mobile', $username)
                 ->first();
-            $this->redirectTo = $user->hasRole('admin')?
-                route("admin.home")
-                : route("user.home");
             if ($user->hasRole('admin')) {
                 return redirect()->route('admin.home')->with('status', "$user->name خوش آمدید ");
             }
             else
-                return redirect()->route('user.home')->with('status', "$user->name خوش آمدید ");
+                return redirect()->route('welcome')->with('status', "$user->name خوش آمدید ");
         } else
             return redirect()->route('mobileLogin')->with('error', 'ایمیل یا رمز عبور وارد شده صحیح نمی باشد');
     }
