@@ -31,7 +31,7 @@ class ImageFactory extends Factory
         return [
             'title' => $this->faker->word,
             'alt' => $this->faker->sentence,
-            'path' => $this->faker->image( 'storage/app/public'),
+            'path' => $this->faker->imageUrl(),
 //            'imageable_id' => rand(1,2050),
 //            'imageable_type' => $arr[rand(0,1)],
         ];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MobileController;
@@ -17,4 +18,7 @@ Route::group([
 
     Route::resource('users',AdminUserController::class);
   Route::get('users/{user}/activation',[AdminUserController::class,'activation'])->name('users.activation');
+
+    Route::resource('posts',AdminPostController::class);
+    Route::get('posts/{post}/activation',[AdminPostController::class,'activation'])->name('posts.activation');
 });

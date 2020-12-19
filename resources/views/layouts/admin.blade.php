@@ -38,7 +38,7 @@
 
         <a href="{{route('logout')}}">خروج</a>
         <a href="{{route('admin.users.index')}}">کاربران</a>
-        <a href="{{route('logout')}}">پست ها</a>
+        <a href="{{route('admin.posts.index')}}">پست ها</a>
 </div>
 <div class="m-5">
     @yield('content')

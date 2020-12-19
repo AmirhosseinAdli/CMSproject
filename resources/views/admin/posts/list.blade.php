@@ -34,8 +34,7 @@
     </thead>
     <tbody>
     @foreach($posts as $post)
-        @if($post->activation)
-        <tr>
+        <tr @if($post->activation == 0) bgcolor="yellow" @endif>
             <th scope="row">{{$post->id}}</th>
             <td>{{$post->title}}</td>
             <td>{{$post->slug}}</td>
@@ -59,12 +58,12 @@
                 </table>
                         </td>
             <td>
-                <form action="{{route('posts.show',[$post])}}" method="get">
+                <form action="{{route('admin.posts.show',[$post])}}" method="get">
                     @csrf
                     <button type="submit" class="btn btn-primary btn-sm active">Show</button>
                 </form>
 
-                <form action="{{route('posts.destroy',[$post])}}" method="post">
+                <form action="{{route('admin.posts.destroy',[$post])}}" method="post">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm active" onclick="return confirm('آیا از حذف این پست مطمپن هستید؟')">Delete</button>
@@ -72,7 +71,6 @@
 
             </td>
                         </tr>
-        @endif
                         @endforeach
                         </tbody>
     {{$posts->links('pagination::bootstrap-4')}}

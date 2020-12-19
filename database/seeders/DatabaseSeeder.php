@@ -15,11 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        (new RolePermissionSeeder())->run();
-        (new UserSeeder())->run();
-        (new CategorySeeder())->run();
-        (new TagSeeder())->run();
-        (new PostSeeder())->run();
-        (new ImageSeeder())->run();
+//        (new RolePermissionSeeder())->run();
+        $this->call([
+            RolePermissionSeeder::class,
+            UserSeeder::class,
+            ImageSeeder::class,
+            TagSeeder::class,
+            CategorySeeder::class,
+            PostSeeder::class
+        ]);
+//        (new UserSeeder())->run();
+//        (new ImageSeeder())->run();
+//        (new TagSeeder())->run();
+//        (new CategorySeeder())->run();
+//        (new PostSeeder())->run();
     }
 }
