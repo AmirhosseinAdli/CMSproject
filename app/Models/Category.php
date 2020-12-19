@@ -27,4 +27,9 @@ class Category extends Model
     {
         return $this->morphOne(Image::class, 'imageable');
     }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

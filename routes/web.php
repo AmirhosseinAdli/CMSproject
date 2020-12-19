@@ -1,16 +1,16 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MobileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostPrimController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('layouts.app');
 })->name('welcome');
-
-Route::resource('posts', PostController::class);
 
 Route::group([
     'prefix' => 'auth',
@@ -27,20 +27,14 @@ Route::group([
 }
 );
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/sendcode/{mobile}',[MobileController::class,'sendVerificationCode']);
-Route::get('/verifycode/{mobile}/{code}',[MobileController::class,'verifyMobile']);
-
-Route::get('request',function (){
-    return view('services');
-});
-
 Route::group([
     'middleware' => 'auth'
 ],function (){
     Route::resource('posts', PostController::class);
-//    Route::get('/all',[PostPrimController::class,'index'])->name('index');
-//    Route::get('show',[PostPrimController::class,'show']);
+    Route::get('home', [PostController::class,'home'])->name('posts.home');
+
+    Route::resource('tags', TagController::class);
+
+    Route::resource('categories', CategoryController::class);
 });
 

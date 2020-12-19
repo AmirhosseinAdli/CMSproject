@@ -34,6 +34,15 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
+    public function tags()
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
     /**
      * The attributes that should be hidden for arrays.
      *

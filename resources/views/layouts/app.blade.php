@@ -71,6 +71,11 @@
 <div class="m-5">
     @if(auth()->check())
         <p>سلام {{ auth()->user()->name}} </p>
+        <a href="{{route('posts.index')}}">پست های {{auth()->user()->name}}</a><br/>
+        <a href="{{route('posts.home')}}">نمایش همه پست ها</a><br/>
+        <a href="{{route('posts.create')}}">ساختن پست</a><br/>
+        <a href="{{route('tags.index')}}">مدیریت تگ ها</a><br/>
+        <a href="{{route('categories.index')}}">مدیریت دسته بندی ها</a><br/>
 
         <a href="{{route('logout')}}">خروج</a>
     @endif
