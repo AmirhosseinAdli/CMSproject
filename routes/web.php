@@ -30,11 +30,18 @@ Route::group([
 Route::group([
     'middleware' => 'auth'
 ],function (){
+    Route::get('posts/draft',[PostController::class,'draftPosts'])->name('posts.draft');
+    Route::get('posts/deleted',[PostController::class,'deletedPosts'])->name('posts.deleted');
     Route::resource('posts', PostController::class);
+
+    Route::post('posts/{post}/restore',[PostController::class,'restore'])->name('posts.restore');
+    Route::delete('posts/{post}/terminate',[PostController::class,'terminate'])->name('posts.terminate');
     Route::get('home', [PostController::class,'home'])->name('posts.home');
 
     Route::resource('tags', TagController::class);
 
     Route::resource('categories', CategoryController::class);
+
 });
+
 

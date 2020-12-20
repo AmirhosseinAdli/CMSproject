@@ -72,6 +72,8 @@
     @if(auth()->check())
         <p>سلام {{ auth()->user()->name}} </p>
         <a href="{{route('posts.index')}}">پست های {{auth()->user()->name}}</a><br/>
+        <a href="{{route('posts.draft')}}">پست های درفت شده {{auth()->user()->name}}</a><br/>
+        <a href="{{route('posts.deleted')}}">پست های حذف شده {{auth()->user()->name}}</a><br/>
         <a href="{{route('posts.home')}}">نمایش همه پست ها</a><br/>
         <a href="{{route('posts.create')}}">ساختن پست</a><br/>
         <a href="{{route('tags.index')}}">مدیریت تگ ها</a><br/>

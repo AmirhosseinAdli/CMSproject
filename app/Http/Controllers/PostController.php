@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\DeletePost;
+use App\Mail\TerminatePost;
 use App\Models\Image;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Stmt\DeclareDeclare;
@@ -15,7 +19,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = auth()->user()->posts()->paginate(10);
+        $posts = auth()->user()->posts()->withTrashed()->paginate(10);
         return view('posts.list',compact('posts'));
     }
 
@@ -69,9 +73,39 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        Storage::delete($post->image->path);
         $post->image()->delete();
         $post->delete();
+        Mail::to(auth()->user()->email)->send(new DeletePost($post));
         return redirect()->route('posts.index');
+    }
+
+    public function restore($post)
+    {
+        Image::withTrashed()->where('imageable_type',Post::class)->where('imageable_id',$post)->restore();
+        Post::withTrashed()->find($post)->restore();
+        return redirect()->route('posts.index');
+    }
+
+    public function terminate($post)
+    {
+        Storage::delete(Image::withTrashed()->where('imageable_type',Post::class)->where('imageable_id',$post)->get()->toArray()[0]['path']);
+        Image::withTrashed()->where('imageable_type',Post::class)->where('imageable_id',$post)->forceDelete();
+        $post1 = Post::withTrashed()->find($post);
+        Post::withTrashed()->find($post)->forceDelete();
+        Mail::to(auth()->user()->email)->send(new TerminatePost($post1));
+        return redirect()->route('posts.index');
+    }
+
+    public function draftPosts()
+    {
+        $posts = auth()->user()->posts()->where('activation',0)->paginate(10);
+        return view('posts.draft',compact('posts'));
+    }
+
+    public function deletedPosts()
+    {
+        $posts = auth()->user()->posts()->onlyTrashed()->paginate(10);
+//        $posts = auth()->user()->posts()->where('deleted_at','!=',null);
+        return view('posts.deleted',compact('posts'));
     }
 }

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterRequest;
+use App\Jobs\SendWelcomeEmailJob;
+use App\Mail\RegisterWelcome;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -43,6 +46,9 @@ class AuthController extends Controller
 
         if ($this->attempt($request->get('email'), $request->get('password')))
         {
+            $user = \auth()->user();
+            Mail::to(auth()->user()->email)->send(new RegisterWelcome($user));
+//            SendWelcomeEmailJob::dispatch($user)->delay(now()->minute);
             return redirect()->route('welcome')->with('status', "$user->name خوش آمدید ");
         } else
             return redirect()->back()->with('error', 'چنین کاربری از قبل وجود دارد!!!');

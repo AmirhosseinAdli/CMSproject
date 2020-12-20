@@ -14,8 +14,7 @@
     </thead>
     <tbody>
     @forelse($posts as $post)
-        @if($post->activation)
-        <tr @if($post->deleted_at) bgcolor="red" @endif>
+        <tr>
             <th scope="row">{{$post->id}}</th>
             <td>{{$post->title}}</td>
             <td>{{$post->slug}}</td>
@@ -66,7 +65,6 @@
                     </td>
             @endif
                         </tr>
-        @endif
     @empty
                         @endforelse
                         </tbody>
