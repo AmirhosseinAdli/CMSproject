@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -43,6 +44,11 @@ class AuthController extends Controller
         $arr = $request->validated();
         $arr['password'] = Hash::make($arr['password']);
         $user = User::create($arr);
+        DB::table('model_has_roles')->insert([
+            'role_id' => 5,
+            'model_type' => User::class,
+            'model_id' => $user->id,
+        ]);
 
         if ($this->attempt($request->get('email'), $request->get('password')))
         {
@@ -92,7 +98,7 @@ class AuthController extends Controller
                 ->where('email', $username)
                 ->orWhere('mobile', $username)
                 ->first();
-            if ($user->hasRole('admin')) {
+            if ($user->hasRole('super-admin') || $user->hasRole('admin')) {
                 return redirect()->route('admin.home')->with('status', "$user->name خوش آمدید ");
             }
             else

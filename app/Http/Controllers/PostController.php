@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\DeletePost;
+use App\Mail\PublishPost;
 use App\Mail\TerminatePost;
 use App\Models\Image;
 use App\Models\Post;
@@ -10,6 +11,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +19,12 @@ use PhpParser\Node\Stmt\DeclareDeclare;
 
 class PostController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Post::class,'post');
+    }
+
     public function index()
     {
         $posts = auth()->user()->posts()->withTrashed()->paginate(10);
@@ -36,6 +44,9 @@ class PostController extends Controller
 
     public function create()
     {
+//        $user = User::first();
+//        $user2 = User::find(2);
+//        dd($user2->can("delete-{$user->getRoleNames()->first()}"));
         $tags = auth()->user()->tags()->pluck('title','id');
         $categories = auth()->user()->categories()->pluck('title','id');
         return view('posts.create',compact('tags','categories'));
@@ -50,10 +61,7 @@ class PostController extends Controller
         $arr = ['title' => $request->get('title'),
             'content' => $request->get('content'),
             'user_id' => auth()->id(),
-        ];
-        $post = Post::create($arr);
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->get('tags'));
+        ];$post = Post::create($arr);if ($request->has('tags')) {$post->tags()->sync($request->get('tags'));
         }
         if ($request->has('categories')) {
             $post->categories()->sync($request->get('categories'));
@@ -107,5 +115,15 @@ class PostController extends Controller
         $posts = auth()->user()->posts()->onlyTrashed()->paginate(10);
 //        $posts = auth()->user()->posts()->where('deleted_at','!=',null);
         return view('posts.deleted',compact('posts'));
+    }
+    public function activation(Post $post)
+    {
+        if(Gate::allows('publish-post')) {
+            $post->activation = !$post->activation;
+            $post->update();
+            Mail::to($post->author()->email)->send(new PublishPost($post));
+            return redirect()->route('admin.posts.index');
+        }
+        return abort(404);
     }
 }

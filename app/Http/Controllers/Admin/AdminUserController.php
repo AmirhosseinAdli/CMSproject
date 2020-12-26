@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(AdminUser::class,'post');
+    }
+
     public function index()
     {
         $users = User::paginate(10);
